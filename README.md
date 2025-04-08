@@ -28,7 +28,8 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8002
 ```bash
 ng serve --host 0.0.0.0 
 
-![image](https://github.com/user-attachments/assets/63792e4a-2855-40b9-beff-70537f73bc6a)
+![image](https://github.com/user-attachments/assets/d68d672e-1b62-4611-873c-b93035384022)
+
 
 
 ## Créditos 👨🏻‍💻
