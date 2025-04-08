@@ -1,0 +1,169 @@
+<div class="dashboard lg:my-20 lg:mx-72 md:mx-12 md:my-36 my-28 mx-10">
+  <div class="head-container flex items-center lg:justify-between w-128">
+    <div class="flex flex-col">
+      <h1
+        class="lg:text-3xl md:text-3xl text-2xl font-bold text-black-800 dark:text-white"
+      >
+        Facturas electrónicas de compra
+      </h1>
+      <p
+        *ngIf="invoices.length > 0"
+        class="text-xl mb-4 text-sm text-gray dark:text-white"
+      >
+        <!-- Text for larger screens -->
+        <span class="hidden sm:inline"
+          >Número total de facturas: {{ invoices.length }}</span
+        >
+        <!-- Text for mobile screens -->
+        <span class="inline sm:hidden">{{ invoices.length }} facturas electrónicas de compra</span>
+      </p>
+      <div *ngIf="invoices.length > 0; else noInvoices">
+        <!-- Conditionally Show Create Invoice Form -->
+        <app-invoice-create
+          *ngIf="showCreateInvoice"
+          [showCreateInvoice]="showCreateInvoice"
+          (save)="onInvoiceSaved()"
+          (cancel)="onCancelInvoiceCreation()"
+        ></app-invoice-create>
+      </div>
+    </div>
+
+    <!-- Right Section: Filter + New Invoice -->
+    <div class="flex items-center lg:space-x-10 md:space-x-10">
+      <!-- Filter Dropdown -->
+      <div class="text-xl relative inline-block pl-10">
+        <button
+          (click)="toggleFilterDropdown()"
+          class="font-bold py-2 px-4 text-black-800 dark:text-white"
+          >
+          <!-- Text for larger screens -->
+          <span class="hidden sm:inline">Filtrar por estado</span>
+          <!-- Text for mobile screens -->
+          <span class="inline sm:hidden">Filtrar</span>
+          <img
+            src="./icons/Path 2.svg"
+            alt="New Invoice Icon"
+            class="inline-flex pl-2 svg-filter-invoices"
+          />
+        </button>
+        <div
+          *ngIf="showFilterDropdown"
+          class="absolute bg-white dark:bg-black-light shadow-md mt-2 p-4 w-[160px] items-center rounded-lg"
+        >
+          <label
+            *ngFor="let status of ['ingresado', 'aprobado']"
+            class="flex items-center mb-2 space-x-3 dark:text-white cursor-pointer"
+          >
+            <input
+              type="checkbox"
+              [value]="status"
+              (change)="onStatusChange(status, $event.target.checked)"
+              class="appearance-none w-5 h-5 bg-blue-100 rounded border border-transparent hover:border-blue checked:bg-blue checked:border-white checked:appearance-none checked:bg-[url('assets/icons/check.svg')] checked:bg-center checked:bg-no-repeat"
+            />
+            <span class="mt-1"> {{ status | titlecase }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <!--Encabezado de tabla--->
+   <div class="header-table-invoices grid grid-cols-6 sm:grid-cols-3 lg:grid-cols-6 gap-2 mt-16 bg-white p-2 rounded-lg">
+    <div class="code  p-2 rounded-md">
+      <label for="campo1" class="text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1">Código</label>
+    </div>
+    <div class="date p-2 rounded-md">
+      <label for="campo2" class="text-base dark:text-white font-bold pl-10 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1">Fecha</label>
+    </div>
+    <div class="total p-2 rounded-md">
+      <label for="campo3" class="text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1">Total</label>
+    </div>
+    <div class="description p-2 rounded-md">
+      <label for="campo4" class=" text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1">Descripción</label>
+    </div>
+    <div class="status p-2 rounded-md">
+      <label for="campo5" class=" text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1">Estado y gestión</label>
+    </div>
+  </div>
+
+
+  <!-- List of Invoices -->
+  <div
+    *ngIf="filteredInvoices.length > 0; else noInvoices"
+    class="grid gap-4 mt-8 list-table-invoices"
+  >
+    <div
+      *ngFor="let invoice of filteredInvoices"
+      [routerLink]="['/invoice', invoice._id]"
+      class="invoice-card bg-white dark:bg-black shadow-sm py-5 rounded-lg hover:border-blue border border-transparent cursor-pointer grid grid-cols-2 gap-y-4 items-center sm:flex sm:items-center sm:w-128 sm:gap-0"
+    >
+      <!-- Invoice ID -->
+      <h2
+        class="text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1"
+      >
+        <span class="text-gray font-bold">#</span>{{ invoice.id }}
+      </h2>
+
+      <!-- Due Date -->
+      <p
+        class="text-sm text-gray dark:text-white pl-4 sm:pr-16 col-span-1 sm:col-auto"
+      >
+        {{ invoice.createdAt | date : "dd MMM yyyy" }}
+      </p>
+
+      <!-- Total -->
+      <p
+        class="text-base dark:text-white font-bold pl-4 col-span-1 row-start-3 sm:pr-16 sm:col-auto"
+      >
+        {{ invoice.total | currency }}
+      </p>
+
+      <!-- Client Name -->
+      <p
+        class="text-sm text-gray dark:text-white text-right pr-4 sm:pr-16 col-span-1 sm:col-auto sm:text-left"
+      >
+        {{ invoice.clientName }}
+      </p>
+
+      <!-- Status -->
+      <div
+        class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold justify-end col-start-2 row-start-3 sm:col-auto sm:w-[104px] sm:h-[40px] w-[80px] justify-self-end mr-4"
+        [ngClass]="{
+          'bg-green-light text-green': invoice.status === 'aprobado',
+          'bg-orange-light text-orange': invoice.status === 'ingresado',
+          'bg-gray-100 dark:bg-black-100 dark:text-white text-blue':
+            invoice.status === 'finalizado'
+        }"
+      >
+        <span
+          class="w-2 h-2 rounded-full"
+          [ngClass]="{
+            'bg-green': invoice.status === 'aprobado',
+            'bg-orange': invoice.status === 'ingresado',
+            'bg-blue': invoice.status === 'finalizado'
+          }"
+        ></span>
+        {{ invoice.status | titlecase }}
+      </div>
+
+      <!-- See More Button -->
+      <button
+        [routerLink]="['/invoice', invoice.id]"
+        class="hidden sm:inline-block pl-5 pr-8"
+      >
+        <img
+          src="./icons/Desktop - Invoices - Hover/Path 5 Copy.svg"
+          alt="See More"
+          class="h-3 w-3 svg-see-more-invoice"
+        />
+      </button>
+    </div>
+  </div>
+
+  <ng-template #noInvoices>
+    <h2>No se encontaron facturas en la base de datos</h2>
+    <p>
+      Consulta a soporte sobre WS.
+    </p>
+  </ng-template>
+</div>

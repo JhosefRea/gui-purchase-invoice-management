@@ -1,0 +1,91 @@
+<div>
+  <!-- Modal Container -->
+  <div>
+    <h2 class="text-2xl font-bold mb-6 dark:text-white">{{ message }}</h2>
+    <form [formGroup]="userForm">
+      <div>
+        <div class="mb-3">
+          <label class="text-gray dark:text-blue-100 block mb-1"
+            >Nombre de Usuario</label
+          >
+          <input
+            formControlName="name"
+            type="text"
+            readonly
+            class="font-bold w-full border p-2 rounded bg-gray-100 dark:bg-black dark:border-black-light dark:text-gray cursor-not-allowed"
+          />
+        </div>
+        <div class="mb-3">
+          <label class="text-gray dark:text-blue-100 block mb-1"
+            >Correo electrónico</label
+          >
+          <input
+            formControlName="email"
+            type="text"
+            readonly
+            class="font-bold w-full border p-2 rounded bg-gray-100 dark:bg-black dark:border-black-light dark:text-gray cursor-not-allowed"
+          />
+        </div>
+        <div formGroupName="userRol">
+          <div class="mb-3">
+            <label class="text-gray dark:text-blue-100" for="dropdown"
+              >Selecciona el rol:</label
+            >
+            <select
+              id="dropdown"
+              formControlName="rol"
+              class="input-field dark:bg-black dark:border-black-light border-solid dark:text-white font-bold block w-full border p-2 rounded focus:border-blue"
+              [ngClass]="{
+                'border-red-500':
+                  userForm.get('userRol')?.get('rol')?.touched &&
+                  userForm.get('userRol')?.get('rol')?.invalid
+              }"
+            >
+              <option *ngFor="let rol of roles" [value]="rol">{{ rol }}</option>
+            </select>
+            <p
+              *ngIf="
+                userForm.get('userRol')?.get('rol')?.touched &&
+                userForm.get('userRol')?.get('rol')?.hasError('required')
+              "
+              class="text-red-500 text-sm"
+            >
+              Selecciona el rol
+            </p>
+          </div>
+          <div class="mb-3">
+            <label class="text-gray dark:text-blue-100 block mb-1"
+              >Descripción del rol</label
+            >
+            <input
+              formControlName="description"
+              class="input-field dark:bg-black dark:border-black-light border-solid dark:text-white font-bold block w-full border p-2 rounded focus:border-blue"
+              [ngClass]="{
+                'border-red-500':
+                  userForm.get('userRol')?.get('description')?.touched &&
+                  userForm.get('userRol')?.get('description')?.invalid
+              }"
+            />
+            <p
+              *ngIf="
+                userForm.get('userRol')?.get('description')?.touched &&
+                userForm
+                  .get('userRol')
+                  ?.get('description')
+                  ?.hasError('required')
+              "
+              class="text-red-500 text-sm"
+            >
+              Completa la descripción
+            </p>
+            <div class="mb-3">
+              <h4 class="font-bold">Descripción del rol ingresada:</h4>
+              <!-- Reflejar el valor del input en tiempo real -->
+              <p>{{ userForm.get("userRol")?.get("description")?.value }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

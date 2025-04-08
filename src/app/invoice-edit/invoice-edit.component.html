@@ -1,0 +1,192 @@
+<div
+  class="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex items-start justify-start z-50"
+>
+  <div
+    class="bg-white dark:bg-black-700 w-full md:w-2/3 h-full overflow-y-auto p-8 transform transition-transform ease-in-out duration-1000"
+  >
+    <h2 class="text-xl font-bold mb-4 pb-8 dark:text-white">
+      Clasificar Factura <span class="text-gray">#</span>{{ invoice.id }}
+    </h2>
+
+    <form [formGroup]="invoiceForm" (ngSubmit)="createEinvoice()">
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold mb-2 text-blue">
+          Categoría de factura
+        </h3>
+        <div
+          class="bg-white dark:bg-black p-6 mt-8 mb-6 rounded-lg shadow-lg mt-4 text-center"
+        >
+          <label class="text-gray dark:text-blue-100" for="dropdown"
+            >Selecciona una categoría de factura:</label
+          >
+          <select
+            id="dropdown"
+            formControlName="einvoiceCatalogs"
+            [ngClass]="{
+              'border-red-500':
+                invoiceForm.get('einvoiceCatalogs')?.touched &&
+                invoiceForm.get('einvoiceCatalogs')?.invalid
+            }"
+            class="input-field dark:bg-black dark:border-black-light border-solid dark:text-white font-bold block w-full border p-2 rounded focus:border-blue"
+          >
+            <option *ngFor="let option of options" [value]="option">
+              {{ option }}
+            </option>
+          </select>
+        </div>
+        <div formGroupName="senderAddress">
+          <h3 class="text-lg font-semibold mb-2 text-blue">
+            Datos del Proveedor
+          </h3>
+          <div class="space-y-2">
+            <label class="text-gray">Dirección de domicilio</label>
+            <input
+              formControlName="street"
+              readonly
+              class="font-bold w-full border p-2 rounded bg-gray-100 dark:bg-black dark:border-black-light dark:text-gray cursor-not-allowed"
+            />
+            <div class="grid grid-cols-3 gap-4 pt-6">
+              <div>
+                <label class="text-gray dark:text-blue-100">Ciudad</label>
+                <input
+                  formControlName="city"
+                  readonly
+                  class="font-bold w-full border p-2 rounded bg-gray-100 dark:bg-black dark:border-black-light dark:text-gray cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label class="text-gray dark:text-blue-100"
+                  >Código postal</label
+                >
+                <input
+                  formControlName="postCode"
+                  readonly
+                  class="font-bold w-full border p-2 rounded bg-gray-100 dark:bg-black dark:border-black-light dark:text-gray cursor-not-allowed"
+                />
+              </div>
+              <div>
+                <label class="text-gray dark:text-blue-100">País</label>
+                <input
+                  formControlName="country"
+                  readonly
+                  class="font-bold w-full border p-2 rounded bg-gray-100 dark:bg-black dark:border-black-light dark:text-gray cursor-not-allowed"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="mb-4">
+          <label class="text-gray">Fecha de emisión</label>
+          <input
+            formControlName="createdAt"
+            type="text"
+            readonly
+            class="font-bold w-full border p-2 rounded bg-gray-100 dark:bg-black dark:border-black-light dark:text-gray cursor-not-allowed"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="text-gray">Payment Terms</label>
+          <input
+            formControlName="paymentTerms"
+            type="number"
+            readonly
+            class="font-bold w-full border p-2 rounded bg-gray-100 dark:bg-black dark:border-black-light dark:text-gray cursor-not-allowed"
+          />
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold mb-2 text-blue">
+          Detalle de productos
+        </h3>
+        <table class="table-auto w-full">
+          <thead>
+            <tr>
+              <th
+                class="py-2 font-normal text-gray dark:text-blue-100 text-left"
+              >
+                Nombre del producto
+              </th>
+              <th class="py-2 font-normal text-gray dark:text-blue-100">
+                Cantidad
+              </th>
+              <th class="py-2 font-normal text-gray dark:text-blue-100">
+                Precio
+              </th>
+              <th class="py-2 font-normal text-gray dark:text-blue-100">
+                Total
+              </th>
+
+              <!-- For the bin icon -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let item of items.controls; let i = index"
+              [formGroup]="item"
+            >
+              <td class="w-[35%] mb-3">
+                <input
+                  formControlName="name"
+                  class="font-bold w-full text-left dark:text-white text-semibold dark:bg-black dark:border-black-light border-solid border border-blue-100 p-4 mr-2 mb-2 rounded-lg"
+                  placeholder="Item Name"
+                  readonly
+                />
+              </td>
+              <td class="w-[15%] px-2">
+                <input
+                  formControlName="quantity"
+                  type="number"
+                  class="font-bold w-full text-center dark:text-white text-semibold dark:bg-black dark:border-black-light border-solid border border-blue-100 py-4 mb-2 rounded-lg"
+                  placeholder="Qty."
+                  readonly
+                />
+              </td>
+              <td class="w-[15%]">
+                <input
+                  formControlName="price"
+                  type="number"
+                  class="font-bold w-full text-center dark:text-white text-semibold dark:bg-black dark:border-black-light border-solid border border-blue-100 py-4 mb-2 rounded-lg"
+                  placeholder="Price"
+                  readonly
+                />
+              </td>
+              <td class="font-bold py-2 w-[15%]">
+                <input
+                  formControlName="total"
+                  type="number"
+                  class="input-field block w-full text-center bg-transparent text-gray dark:text-white text-semibold"
+                  readonly
+                  placeholder="Total"
+                />
+              </td>
+              <!-- Bin Icon -->
+            </tr>
+          </tbody>
+        </table>
+        <!-- Add New Item Button -->
+      </div>
+
+      <div class="flex justify-end">
+        <button
+          type="button"
+          class="bg-gray-light dark:bg-black dark:text-blue-100 hover:bg-gray-100 text-gray px-6 py-4 rounded-3xl font-semibold mr-4"
+          (click)="cancel.emit()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="bg-blue-600 hover:bg-blue-light dark:hover:bg-blue-light text-white px-4 py-1 rounded-3xl justify-end font-semibold"
+        >
+          Aprobar Factura
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

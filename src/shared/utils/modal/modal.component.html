@@ -1,0 +1,33 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white p-6 rounded shadow-md w-96">
+      
+        <!-- Modal USER DELETE -->
+        <div *ngIf="mode === 'delete'">
+            <p>{{ message }}</p>
+            <div class="flex items-center justify-between mt-4">
+            <button (click)="onCancel()" class="bg-gray-light hover:bg-gray-100 text-gray px-4 py-2 rounded-3xl font-semibold">Cancelar</button>
+            <button (click)="onConfirm()" class="bg-red-500 hover:bg-red-light dark:hover:bg-red-light text-white px-4 py-2 rounded-3xl justify-end font-semibold">Eliminar</button>
+            </div>
+        </div>
+  
+      <!-- Modal USER EDIT -->
+      <div *ngIf="mode === 'edit'">
+        <app-user-edit 
+            [(user)]="user" 
+            [message]="message" 
+            (formValidityChanged)="onFormValidityChanged($event)" 
+            (userUpdated)="onUserUpdated($event)">
+        </app-user-edit>
+        <div class="flex items-center justify-between mt-4">
+          <button (click)="onCancel()" class="bg-gray-light hover:bg-gray-100 text-gray px-4 py-2 rounded-3xl font-semibold">Cancelar</button>
+          <button 
+            (click)="onConfirm()" 
+            class="bg-blue-600 hover:bg-blue-light dark:hover:bg-blue-light text-white px-4 py-2 rounded-3xl justify-end font-semibold">
+            Guardar
+          </button>
+        </div>
+      </div>
+      
+    </div>
+</div>
+  

@@ -1,0 +1,139 @@
+<div class="invoice-view lg:mt-20 md:mt-16 mt-24">
+  <button [routerLink]="['/dashboard']" class="font-semibold text-gray-700 dark:text-gray-300 flex items-center space-x-2 hover:text-gray-900 dark:hover:text-white">
+    <img
+      src="./icons/Path 2-left.svg"
+      alt="Back Icon"
+      class="w-4 h-4 svg-back-invoice"
+    />
+    <span>Regresar</span>
+  </button>
+
+  <div class="head-container flex justify-between items-center bg-white dark:bg-black p-6 mt-8 mb-6 rounded-lg shadow-lg">
+    <div
+      class="flex items-center justify-start gap-2 px-4 py-2 rounded-md text-sm font-bold w-auto"
+      [ngClass]="{
+        'bg-green-100 dark:bg-green-600 text-green-800': invoice.status === 'aprobado',
+        'bg-orange-100 text-orange-600': invoice.status === 'ingresado',
+        'bg-gray-100 text-gray-600': invoice.status === 'finalizado'
+      }"
+    >
+      <p class="text-gray-600 dark:text-gray-300 text-sm font-medium">
+        Estado
+      </p>
+      <span
+        class="w-2.5 h-2.5 rounded-full"
+        [ngClass]="{
+          'bg-green-500': invoice.status === 'aprobado',
+          'bg-orange-500': invoice.status === 'ingresado',
+          'bg-blue-500': invoice.status === 'finalizado'
+        }"
+      ></span>
+      {{ invoice.status | titlecase }}
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <button
+        (click)="edit.emit()"
+        class="bg-gray-200 hover:bg-gray-300 text-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-600 px-6 py-2 rounded-full font-medium transition-all duration-200"
+      >
+        Editar
+      </button>
+  
+    </div>
+  </div>
+
+  <div class="bg-white dark:bg-black rounded-lg p-6 shadow-lg">
+    <h1 class="font-bold text-center text-gray-700 dark:text-white mt-4">
+      <span class="text-gray-500">Categoría de factura:</span> {{ invoice.einvoiceCatalogs }}
+    </h1>
+
+
+    <div>
+      <p class="font-semibold text-gray-800 dark:text-white">Datos del Proveedor</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+      <!-- Sender Address - now to the left -->
+      <div>
+        <p class="font-semibold text-gray-800 dark:text-white">Nombres y Apellidos</p>
+        <p class="font-semibold text-gray-800 dark:text-white">Dirección</p>
+        <p class="font-semibold text-gray-800 dark:text-white">Ciudad</p>
+        <p class="font-semibold text-gray-800 dark:text-white">Código postal</p>
+        <p class="font-semibold text-gray-800 dark:text-white">País</p>
+      </div>
+      <div>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.clientName }}</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.senderAddress.street }}</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.senderAddress.city }}</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.senderAddress.postCode }}</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.senderAddress.country }}</p>
+      </div>
+    
+      <!-- Invoice ID - now to the right -->
+      <div class="text-right">
+        <h1 class="font-semibold text-gray-700 dark:text-white">
+          <span class="text-gray-500">#</span>{{ invoice.id }}
+        </h1>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.description }}</p>
+      </div>
+    </div>
+
+
+    <div>
+      <p class="font-semibold text-gray-800 dark:text-white mt-8">Razón Social</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8" >
+      <div>
+        <p class="font-semibold text-gray-800 dark:text-white">Nombres y Apellidos</p>
+        <p class="font-semibold text-gray-800 dark:text-white">Dirección</p>
+        <p class="font-semibold text-gray-800 dark:text-white">Ciudad</p>
+        <p class="font-semibold text-gray-800 dark:text-white">Código postal</p>
+        <p class="font-semibold text-gray-800 dark:text-white">País</p>
+      </div>
+      <div>
+        <p class="text-gray-600 dark:text-blue-100">GRUPO KFC</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.clientAddress.street }}</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.clientAddress.city }}</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.clientAddress.postCode }}</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.clientAddress.country }}</p>
+      </div>
+
+      <div>
+        <p class="ont-semibold text-gray-800 dark:text-white">Enviado a</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.clientEmail }}</p>
+      </div>
+    </div>
+    <div class="mt-8">
+        <p class="font-semibold text-gray-800 dark:text-white">Fecha de emisión</p>
+        <p class="text-gray-600 dark:text-blue-100">{{ invoice.createdAt | date: 'dd MMM yyyy' }}</p>
+    </div>
+    <div class="mt-8 overflow-hidden rounded-lg">
+      <table class="table-auto w-full text-left">
+        <thead class="bg-gray-200 dark:bg-black-light">
+          <tr>
+            <th class="px-4 py-2 text-gray-700 dark:text-blue-100">Nombre del artículo</th>
+            <th class="px-4 py-2 text-gray-700 dark:text-blue-100">Cantidad</th>
+            <th class="px-4 py-2 text-gray-700 dark:text-blue-100">Precio</th>
+            <th class="px-4 py-2 text-gray-700 dark:text-blue-100">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let item of invoice.items"
+            class="bg-gray-100 dark:bg-black-light"
+          >
+            <td class="px-4 py-2 font-semibold text-gray-800 dark:text-white">{{ item.name }}</td>
+            <td class="px-4 py-2 text-gray-600 dark:text-blue-100">{{ item.quantity }}</td>
+            <td class="px-4 py-2 text-gray-600 dark:text-blue-100">{{ item.price | currency }}</td>
+            <td class="px-4 py-2 text-gray-800 dark:text-white">{{ item.total || (item.quantity * item.price) | currency }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="bg-blue text-white dark:bg-black-800">
+            <td colspan="2" class="px-4 py-4 font-medium">Valor Total</td>
+            <td colspan="2" class="px-4 py-4 text-right font-semibold">{{ getTotal() | currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

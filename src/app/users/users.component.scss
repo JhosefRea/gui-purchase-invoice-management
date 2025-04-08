@@ -1,0 +1,44 @@
+/* Usando el SVG como fondo e aplicando el filtro */
+.dashboard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.svg-filter-user {
+    width: 20px;
+    height: 20px;
+    filter: invert(34%) sepia(74%) saturate(450%) hue-rotate(150deg) brightness(90%) contrast(80%);
+  }
+
+.svg-see-more-user{
+    filter: invert(34%) sepia(74%) saturate(450%) hue-rotate(150deg) brightness(90%) contrast(80%);
+  }
+
+.table-user{
+  background-color: rgb(236, 122, 87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 200px;
+}
+.email{
+  display: flex;
+  justify-content: center;
+}
+
+.name, .rol{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.invoice-card{
+  margin-left: 200px;
+}
+
+.invoice-card .managment_buttons{
+  display: flex;
+  justify-content: center;
+}

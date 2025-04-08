@@ -1,0 +1,249 @@
+<div class="dashboard">
+  <div class="head-container flex items-center lg:justify-between">
+    <div class="flex flex-col">
+      <h1
+        class="lg:text-3xl md:text-3xl text-2xl font-bold text-black-800 dark:text-white"
+      >
+        Lista de Usuarios
+      </h1>
+      <p
+        *ngIf="users.length > 0"
+        class="text-xl mb-4 text-sm text-gray dark:text-white"
+      >
+        <!-- Text for larger screens -->
+        <span class="hidden sm:inline"
+          >Número total de usuarios: {{ users.length }}</span
+        >
+        <!-- Text for mobile screens -->
+        <span class="inline sm:hidden">{{ users.length }} users</span>
+      </p>
+      <div *ngIf="users.length > 0; else noUsers">
+        <!--Conditionally Show Create User For-->
+        <app-user-create
+          *ngIf="showCreateUser"
+          [showCreateUser]="showCreateUser"
+          (save)="onUserSaved()"
+          (cancel)="onCancelUserCreation()"
+        ></app-user-create>
+      </div>
+    </div>
+
+    <!-- Right Section: Filter + New User -->
+    <div class="flex items-center lg:space-x-10 md:space-x-10">
+      <!-- Filter Dropdown -->
+      <div class="text-xl relative inline-block pl-10">
+        <button
+          (click)="toggleFilterDropdown()"
+
+          class="font-bold py-2 px-4 text-black-800 dark:text-white"
+        >
+          <!-- Text for larger screens -->
+          <span class="hidden sm:inline">Filtrar por rol</span>
+          <!-- Text for mobile screens -->
+          <span class="inline sm:hidden">Filtrar</span>
+          <img
+            src="./icons/Path 2.svg"
+            alt="New User Icon"
+            class="inline-flex pl-2 svg-filter-user"
+          />
+        </button>
+        <div
+          *ngIf="showFilterDropdown"
+          class="absolute bg-white dark:bg-black-light shadow-md mt-2 p-4 w-[160px] items-center rounded-lg"
+        >
+          <label
+            *ngFor="let status of ['admin', 'contador']"
+            class="flex items-center mb-2 space-x-3 dark:text-white cursor-pointer"
+          >
+            <input
+              type="checkbox"
+              [value]="status"
+              (change)="onStatusChange(status, $event.target.checked)"
+              class="appearance-none w-5 h-5 bg-blue-100 rounded border border-transparent hover:border-blue checked:bg-blue checked:border-white checked:appearance-none checked:bg-[url('assets/icons/check.svg')] checked:bg-center checked:bg-no-repeat"
+            />
+            <span class="mt-1"> {{ status | titlecase }}</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- New user Dropdown -->
+      <button
+        (click)="openCreateUserForm()"
+        class="bg-blue-600 hover:bg-blue-light text-white font-bold rounded-3xl h-12 lg:w-44 ml-2"
+      >
+        <!-- Text for larger screens -->
+        <span class="text-xl hidden sm:inline lg:ml-2 pr-4">Nuevo Usuario</span>
+        <!-- Text for mobile screens -->
+        <span class="inline sm:hidden lg:ml-2 pr-4">Nuevo</span>
+      </button>
+    </div>
+  </div>
+
+  <!--Encabezado de tabla--->
+  <div
+    class="table-user gap-2 mt-16 p-2 rounded-lg"
+  >
+    <div class="email w-40 p-2 rounded-md">
+      <label
+        for="campo1"
+        class="font-bold"
+        >Email</label
+      >
+    </div>
+    <div class="name w-40 p-2 rounded-md">
+      <label
+        for="campo2"
+        class="font-bold"
+        >Nombre</label
+      >
+    </div>
+    <div class="rol max-w-10 p-2 rounded-md">
+      <label
+        for="campo3"
+        class="text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1"
+        >Rol</label
+      >
+    </div>
+    <div class="description p-2 rounded-md">
+      <label
+        for="campo4"
+        class="text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1"
+        >Descripción</label
+      >
+    </div>
+    <div class="status p-2 rounded-md">
+      <label
+        for="campo5"
+        class="text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1"
+        >Estado</label
+      >
+    </div>
+    <div class="status p-2 rounded-md">
+      <label
+        for="campo5"
+        class="text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1"
+        >Gestión</label
+      >
+    </div>
+
+  </div>
+
+  <!-- List of users -->
+  <div *ngIf="filteredUsers.length > 0; else noUsers" class="grid gap-4 mt-5">
+    <div
+      *ngFor="let user of filteredUsers"
+      class="invoice-card bg-white dark:bg-black shadow-sm py-5 rounded-lg hover:border-blue border border-transparent cursor-pointer grid grid-cols-2 gap-y-4 items-center sm:flex sm:items-center sm:w-160 sm:gap-0"
+    >
+      <!-- User ID -->
+      <div class="w-60">
+        <h2
+          class="text-base dark:text-white font-bold pl-4 col-span-2 sm:pl-8 sm:pr-12 sm:col-span-1 "
+        >
+          <span class="text-gray font-bold"></span>{{ user.email }}
+        </h2>
+      </div>
+
+      <!-- User Name -->
+      <div class="w-20">
+        <p
+          class="text-sm text-gray dark:text-white text-right pr-4 sm:pr-16 col-span-1 sm:col-auto sm:text-left"
+        >
+          {{ user.name }}
+        </p>
+      </div>
+
+      <!-- Rol -->
+      <div class="w-20">
+        <p
+          class="text-sm text-gray dark:text-white pl-4 sm:pr-16 col-span-1 sm:col-auto"
+        >
+          {{ user.userRol.rol }}
+        </p>
+      </div>
+
+      <!-- Descripción del Rol -->
+      <div class="w-40">
+        <p
+          class="text-sm text-gray dark:text-white pl-4 sm:pr-16 col-span-1 sm:col-auto"
+        >
+          {{ user.userRol.description }}
+        </p>
+      </div>
+
+      <!-- Status -->
+      <div
+        class="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-semibold justify-end col-start-2 row-start-3 sm:col-auto sm:w-[104px] sm:h-[40px] w-[80px] justify-self-end mr-4"
+        [ngClass]="{
+          'bg-green-light text-green': user.status === 'inactive',
+          'bg-gray-100 dark:bg-black-100 dark:text-white text-blue':
+            user.status === 'active'
+        }"
+      >
+        <span
+          class="w-2 h-2 rounded-full"
+          [ngClass]="{
+            'bg-green': user.status === 'inactive',
+            'bg-orange': user.status === 'active'
+          }"
+        ></span>
+        {{ user.status | titlecase }}
+      </div>
+
+      <div class="managment_buttons mr-10 ml-10 w-30">
+        <!-- EDIT Button -->
+        <button class="hidden sm:inline-block" (click)="openEditModal(user)" >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            class="w-5 h-5 text-inherit"
+          >
+            <path
+              d="M16.862 2.487a2.663 2.663 0 0 1 3.76 3.76L8.206 18.663l-4.43.493a1.33 1.33 0 0 1-1.472-1.472l.493-4.43L16.862 2.487Z"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M5.532 19.532a1.11 1.11 0 0 1 .362-.246l3.76-.419a.75.75 0 0 0 .392-.214L20.54 8.118a1.164 1.164 0 1 0-1.645-1.645L8.401 17.01a.75.75 0 0 0-.214.392l-.419 3.76a1.11 1.11 0 0 1-.246.362l3.91.4Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+
+        <!-- DELETE Button -->
+        <button class="hidden sm:inline-block pl-5 pr-8"  (click)="openDeleteModal(user)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            class="w-5 h-5 text-inherit"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.75 4.5a.75.75 0 00-.75.75v.75h14V5.25a.75.75 0 00-.75-.75H5.75zm.75 2.25v11a3.25 3.25 0 003.25 3.25h5.5A3.25 3.25 0 0018.5 17.75v-11H6.5zm5 9.25a.75.75 0 00-1.5 0v-6a.75.75 0 001.5 0v6zm4.75 0a.75.75 0 00-1.5 0v-6a.75.75 0 001.5 0v6z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Dinámico -->
+  <app-modal *ngIf="showModal" 
+      [message]="modalMessage"
+      [mode]="modalMode" 
+      [user]="selectedUser"
+      (saveUserBtn)="onSaveUser($event)" 
+      (confirmDelete)="handleUserDeleted($event)" 
+      (cancel)="closeModal()"
+      >
+    </app-modal>
+
+  <ng-template #noUsers>
+    <h2>No se han encontrado usuarios</h2>
+  </ng-template>
+  
+</div>
+
